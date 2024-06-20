@@ -1,13 +1,14 @@
 use crate::fun::base::get_response;
 use crate::model::post::Post;
+use crate::repo::post::PostRepo;
 
-pub fn show_posts(posts: &Vec<Post>) {
+pub fn show_posts(repo: &PostRepo) {
     println!("\nPOSTS:");
     println!("======\n");
-    posts.iter().for_each(|post| println!("{post}"))
+    repo.get_all().iter().for_each(|post| println!("{post}"))
 }
 
-pub fn write_post(posts: &mut Vec<Post>) {
+pub fn write_post(repo: &mut PostRepo) {
     let questions = vec!["What's the title?", "What's the body?"];
 
     let mut answers: Vec<String> = vec![];
@@ -18,12 +19,16 @@ pub fn write_post(posts: &mut Vec<Post>) {
         answers.push(input);
     });
 
-    let post = Post::new(posts.len() + 1, answers[0].clone(), answers[1].clone());
+    let post = Post::new(
+        repo.get_all().len() + 1,
+        answers[0].clone(),
+        answers[1].clone(),
+    );
 
-    posts.push(post);
+    repo.add(post);
 }
 
-pub fn edit_post(posts: &mut Vec<Post>) {
+pub fn edit_post(repo: &mut PostRepo) {
     let input = get_response("Which post do you want to edit?");
 
     let id: usize = match input.trim().parse() {
@@ -34,10 +39,12 @@ pub fn edit_post(posts: &mut Vec<Post>) {
         }
     };
 
-    let mut post = match posts.get_mut(1 - id) {
+    let id = id - 1;
+
+    let mut post = match repo.get_one(id) {
         Some(post) => post,
         None => {
-            eprintln!("Error: Post with id {} not found", id);
+            eprintln!("Post with {} id, not found", id);
             return;
         }
     };
@@ -63,7 +70,7 @@ fn edit_body(post: &mut Post) {
     post.body = input;
 }
 
-pub fn remove_post(posts: &mut Vec<Post>) {
+pub fn remove_post(repo: &mut PostRepo) {
     let input = get_response("Which post do you want to remove?");
 
     let id: usize = match input.trim().parse() {
@@ -76,13 +83,5 @@ pub fn remove_post(posts: &mut Vec<Post>) {
 
     let id = 1 - id;
 
-    match posts.get(id) {
-        Some(_) => {}
-        None => {
-            eprintln!("Error: Post with id {} not found", id);
-            return;
-        }
-    };
-
-    posts.remove(id);
+    repo.remove(id);
 }

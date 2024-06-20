@@ -13,6 +13,10 @@ impl PostRepo {
         &self.posts
     }
 
+    pub fn get_one(&mut self, index: usize) -> Option<&mut Post> {
+        self.posts.get_mut(index)
+    }
+
     pub fn add(&mut self, post: Post) {
         self.posts.push(post);
     }
@@ -29,8 +33,8 @@ impl PostRepo {
         }
     }
 
-    pub fn edit(&mut self, id: usize, post: &Post) {
-        match self.posts.get_mut(id) {
+    pub fn edit(&mut self, index: usize, post: &Post) {
+        match self.posts.get_mut(index) {
             Some(old_post) => {
                 old_post.title = if post.title.clone().is_empty() {
                     old_post.title.clone()
@@ -46,7 +50,7 @@ impl PostRepo {
             }
 
             None => {
-                eprint!("Post with id {}, not found", id);
+                eprint!("Post with id {}, not found", index);
                 return;
             }
         }
