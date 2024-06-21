@@ -27,7 +27,7 @@ impl PostRepo {
                 self.posts.remove(id);
             }
             None => {
-                eprint!("Post with id {}, not found", id);
+                eprintln!("Post with id {}, not found", id);
                 return;
             }
         }
@@ -50,7 +50,7 @@ impl PostRepo {
             }
 
             None => {
-                eprint!("Post with id {}, not found", index);
+                eprintln!("Post with id {}, not found", index);
                 return;
             }
         }
