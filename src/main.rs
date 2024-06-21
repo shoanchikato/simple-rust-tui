@@ -1,6 +1,7 @@
 use hello_world_one::fun::advanced::{clear_screen, show_options};
 use hello_world_one::fun::post::{edit_post, remove_post, show_posts, write_post};
 use hello_world_one::repo::post::PostRepo;
+use hello_world_one::store::advanced::{on_end, on_load};
 
 fn main() {
     run_app();
@@ -8,6 +9,7 @@ fn main() {
 
 fn run_app() {
     let mut repo = PostRepo::new();
+    on_load(&mut repo);
     loop {
         let option = show_options();
 
@@ -21,4 +23,5 @@ fn run_app() {
             _ => continue,
         }
     }
+    on_end(&repo);
 }

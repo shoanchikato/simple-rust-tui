@@ -81,7 +81,7 @@ pub fn remove_post(repo: &mut PostRepo) {
         }
     };
 
-    let id = 1 - id;
+    let id = id - 1;
 
     repo.remove(id);
 }

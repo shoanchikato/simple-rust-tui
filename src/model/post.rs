@@ -1,5 +1,7 @@
+use serde::{Deserialize, Serialize};
 use std::fmt::{Display, Formatter, Result};
 
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Post {
     pub id: usize,
     pub title: String,
