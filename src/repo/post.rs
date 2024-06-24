@@ -1,3 +1,5 @@
+use std::mem;
+
 use crate::model::post::Post;
 
 pub struct PostRepo {
@@ -22,9 +24,9 @@ impl PostRepo {
     }
 
     pub fn remove(&mut self, id: usize) {
-        match self.posts.get(id) {
-            Some(_) => {
-                self.posts.remove(id);
+        match self.posts.iter().position(|post| post.id == id) {
+            Some(index) => {
+                self.posts.remove(index);
             }
             None => {
                 eprintln!("Post with id {}, not found", id);
@@ -33,24 +35,23 @@ impl PostRepo {
         }
     }
 
-    pub fn edit(&mut self, index: usize, post: &Post) {
-        match self.posts.get_mut(index) {
-            Some(old_post) => {
-                old_post.title = if post.title.clone().is_empty() {
-                    old_post.title.clone()
+    pub fn edit(&mut self, id: usize, title: &str, body: &str) {
+        match self.posts.iter_mut().find(|post| post.id == id) {
+            Some(post) => {
+                post.title = if title.is_empty() {
+                    mem::take(&mut post.title)
                 } else {
-                    post.title.clone()
+                    String::from(title)
                 };
 
-                old_post.body = if post.body.clone().is_empty() {
-                    old_post.body.clone()
+                post.body = if body.is_empty() {
+                    mem::take(&mut post.body)
                 } else {
-                    post.body.clone()
+                    String::from(body)
                 };
             }
-
             None => {
-                eprintln!("Post with id {}, not found", index);
+                eprintln!("Post with id {}, not found", id);
                 return;
             }
         }

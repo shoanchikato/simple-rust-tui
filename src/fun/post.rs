@@ -1,3 +1,5 @@
+use std::mem;
+
 use crate::fun::base::get_response;
 use crate::model::post::Post;
 use crate::repo::post::PostRepo;
@@ -19,10 +21,17 @@ pub fn write_post(repo: &mut PostRepo) {
         answers.push(input);
     });
 
+    let posts = repo.get_all();
+    let new_id = if let Some(post) = posts.last() {
+        post.id + 1
+    } else {
+        1
+    };
+
     let post = Post::new(
-        repo.get_all().len() + 1,
-        answers[0].clone(),
-        answers[1].clone(),
+        new_id,
+        mem::take(&mut answers[0]),
+        mem::take(&mut answers[1]),
     );
 
     repo.add(post);
@@ -39,35 +48,21 @@ pub fn edit_post(repo: &mut PostRepo) {
         }
     };
 
-    let id = id - 1;
-
-    let mut post = match repo.get_one(id) {
-        Some(post) => post,
-        None => {
-            eprintln!("Post with {} id, not found", id);
-            return;
-        }
-    };
-
     let message = format!("{}\n{}\n{}\n", "What do you want to edit?", "title", "body",);
 
     let input = get_response(&message);
 
-    match input.trim() {
-        "title" => edit_title(&mut post),
-        "body" => edit_body(&mut post),
+    match input.as_str() {
+        "title" => {
+            let input = get_response("Enter the new title");
+            repo.edit(id, &input, "");
+        }
+        "body" => {
+            let input = get_response("Enter the new body");
+            repo.edit(id, "", &input);
+        }
         _ => return,
     }
-}
-
-fn edit_title(post: &mut Post) {
-    let input = get_response("Enter the new title");
-    post.title = input;
-}
-
-fn edit_body(post: &mut Post) {
-    let input = get_response("Enter the new body");
-    post.body = input;
 }
 
 pub fn remove_post(repo: &mut PostRepo) {
@@ -80,8 +75,6 @@ pub fn remove_post(repo: &mut PostRepo) {
             return;
         }
     };
-
-    let id = id - 1;
 
     repo.remove(id);
 }
