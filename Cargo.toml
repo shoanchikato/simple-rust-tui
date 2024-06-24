@@ -1,5 +1,5 @@
 [package]
-name = "hello_world_one"
+name = "simple_rust_tui"
 version = "0.1.0"
 edition = "2021"
 

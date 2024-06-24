@@ -1,7 +1,7 @@
-use hello_world_one::fun::advanced::{clear_screen, show_options};
-use hello_world_one::fun::post::{edit_post, remove_post, show_posts, write_post};
-use hello_world_one::repo::post::PostRepo;
-use hello_world_one::store::advanced::{on_end, on_load};
+use simple_rust_tui::fun::advanced::{clear_screen, show_options};
+use simple_rust_tui::fun::post::{edit_post, remove_post, show_posts, write_post};
+use simple_rust_tui::repo::post::PostRepo;
+use simple_rust_tui::store::advanced::{on_end, on_load};
 
 fn main() {
     run_app();
