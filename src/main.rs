@@ -1,27 +1,26 @@
-use simple_rust_tui::fun::advanced::{clear_screen, show_options};
-use simple_rust_tui::fun::post::{edit_post, remove_post, show_posts, write_post};
-use simple_rust_tui::repo::post::PostRepo;
-use simple_rust_tui::store::advanced::{on_end, on_load};
+use simple_rust_tui::fun::app::App;
+use simple_rust_tui::fun::post_options::PostFun;
+use simple_rust_tui::fun::string_io::StringRW;
+use simple_rust_tui::fun::user_io::UserRW;
+use simple_rust_tui::repo::post::PostRW;
+use simple_rust_tui::store::app_io::AppRW;
+use simple_rust_tui::store::file_io::FileRW;
+use std::io::{stdin, stdout, BufReader};
 
 fn main() {
-    run_app();
-}
+    let mut stdout = stdout();
+    let stdin = stdin();
+    let mut stdin_reader = BufReader::new(stdin.lock());
 
-fn run_app() {
-    let mut repo = PostRepo::new();
-    on_load(&mut repo);
-    loop {
-        let option = show_options();
+    let mut string_io = StringRW::new(&mut stdin_reader, &mut stdout);
+    let mut user_response = UserRW::new(&mut string_io);
 
-        match option {
-            0 => break,
-            1 => show_posts(&repo),
-            2 => write_post(&mut repo),
-            3 => clear_screen(),
-            4 => edit_post(&mut repo),
-            5 => remove_post(&mut repo),
-            _ => continue,
-        }
-    }
-    on_end(&repo);
+    let file_io = FileRW::new();
+    let mut post_io = PostRW::new();
+    let mut post_fun = PostFun::new(&mut post_io, &mut user_response);
+
+    let mut app_io = AppRW::new(&file_io);
+    let mut app = App::new(&mut post_fun, &mut app_io);
+
+    app.run();
 }

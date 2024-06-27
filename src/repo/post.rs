@@ -6,22 +6,22 @@ pub trait PostIO {
     fn get_all(&self) -> &Vec<Post>;
     fn get_one(&mut self, index: usize) -> Option<&mut Post>;
     fn add(&mut self, post: Post);
+    fn add_all(&mut self, posts: &mut Vec<Post>);
     fn remove(&mut self, id: usize);
     fn edit(&mut self, id: usize, title: &str, body: &str);
 }
 
-pub struct PostRepo {
+pub struct PostRW {
     posts: Vec<Post>,
 }
 
-impl PostRepo {
-    pub fn new() -> PostRepo {
-        PostRepo { posts: vec![] }
+impl PostRW {
+    pub fn new() -> PostRW {
+        PostRW { posts: vec![] }
     }
 }
 
-impl PostIO for PostRepo {
-
+impl PostIO for PostRW {
     fn get_all(&self) -> &Vec<Post> {
         &self.posts
     }
@@ -32,6 +32,10 @@ impl PostIO for PostRepo {
 
     fn add(&mut self, post: Post) {
         self.posts.push(post);
+    }
+
+    fn add_all(&mut self, posts: &mut Vec<Post>) {
+        self.posts = mem::take(posts);
     }
 
     fn remove(&mut self, id: usize) {

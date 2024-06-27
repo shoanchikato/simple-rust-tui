@@ -8,3 +8,7 @@ release:
 	cargo build --release
 fmt:
 	cargo fmt
+clean:
+	cargo clean
+clip:
+	cargo clippy
