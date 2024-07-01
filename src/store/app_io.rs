@@ -5,6 +5,8 @@ use crate::fun::post_options::PostOptions;
 use crate::model::post::Post;
 use crate::store::file_io::FileIO;
 
+const FILE_NAME: &str = "post_db.json";
+
 pub trait AppIO {
     fn on_load<P: PostOptions>(&mut self, post_rw: &mut P);
     fn on_end<P: PostOptions>(&mut self, post_rw: &mut P);
@@ -22,7 +24,7 @@ impl<'a, F: FileIO> AppRW<'a, F> {
 
 impl<'a, F: FileIO> AppIO for AppRW<'a, F> {
     fn on_load<P: PostOptions>(&mut self, post_rw: &mut P) {
-        let file_path = "post_db.json";
+        let file_path = FILE_NAME;
 
         let mut load_posts = || {
             let string_posts = self.file_io.read_file(file_path);
@@ -42,7 +44,7 @@ impl<'a, F: FileIO> AppIO for AppRW<'a, F> {
     }
 
     fn on_end<P: PostOptions>(&mut self, post_rw: &mut P) {
-        let file_path = "post_db.json";
+        let file_path = FILE_NAME;
 
         let write_posts = || {
             let posts = post_rw.get_all();
