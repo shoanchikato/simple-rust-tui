@@ -16,8 +16,8 @@ pub struct PostRW {
 }
 
 impl PostRW {
-    pub fn new() -> PostRW {
-        PostRW { posts: vec![] }
+    pub fn new(posts: Vec<Post>) -> PostRW {
+        PostRW { posts }
     }
 }
 
@@ -45,7 +45,6 @@ impl PostIO for PostRW {
             }
             None => {
                 eprintln!("Post with id {}, not found", id);
-                return;
             }
         }
     }
@@ -67,7 +66,6 @@ impl PostIO for PostRW {
             }
             None => {
                 eprintln!("Post with id {}, not found", id);
-                return;
             }
         }
     }

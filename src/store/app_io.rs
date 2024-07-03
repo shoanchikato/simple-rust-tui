@@ -34,9 +34,7 @@ impl<'a, F: FileIO> AppIO for AppRW<'a, F> {
             }
         };
 
-        if let Ok(_) = File::open(file_path) {
-            load_posts();
-        } else if let Ok(_) = self.file_io.create_file(file_path) {
+        if File::open(file_path).is_ok() || self.file_io.create_file(file_path).is_ok() {
             load_posts();
         } else {
             eprintln!("Error creating new file");
@@ -54,7 +52,7 @@ impl<'a, F: FileIO> AppIO for AppRW<'a, F> {
             }
         };
 
-        if let Ok(_) = self.file_io.create_file(file_path) {
+        if self.file_io.create_file(file_path).is_ok() {
             write_posts();
         } else {
             eprintln!("Error creating new file");

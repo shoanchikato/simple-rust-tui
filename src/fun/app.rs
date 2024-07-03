@@ -15,7 +15,7 @@ impl<'a, P: PostOptions, A: AppIO> App<'a, P, A> {
 impl<'a, P: PostOptions, A: AppIO> App<'a, P, A> {
     fn show_options(&mut self) -> u8 {
         let options = format!(
-            "\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n",
+            "{}\n{}\n{}\n{}\n{}\n{}\n{}\n",
             "Choose an option:",
             "1 -> show posts",
             "2 -> add post",

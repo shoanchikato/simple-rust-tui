@@ -40,7 +40,6 @@ impl<'a, 'b, P: PostIO, U: UserIO> PostOptions for PostFun<'a, 'b, P, U> {
 
         let mut answers: Vec<String> = vec![];
 
-        eprintln!("");
         questions.iter().for_each(|question| {
             let input = self.user_io.get_response(question);
             answers.push(input);
@@ -77,16 +76,12 @@ impl<'a, 'b, P: PostIO, U: UserIO> PostOptions for PostFun<'a, 'b, P, U> {
 
         let input = self.user_io.get_response(&message);
 
-        match input.as_str() {
-            "title" => {
-                let input = self.user_io.get_response("Enter the new title");
-                self.repo.edit(id, &input, "");
-            }
-            "body" => {
-                let input = self.user_io.get_response("Enter the new body");
-                self.repo.edit(id, "", &input);
-            }
-            _ => return,
+        if input.as_str() == "title" {
+            let input = self.user_io.get_response("Enter the new title");
+            self.repo.edit(id, &input, "");
+        } else if input.as_str() == "body" {
+            let input = self.user_io.get_response("Enter the new body");
+            self.repo.edit(id, "", &input);
         }
     }
 

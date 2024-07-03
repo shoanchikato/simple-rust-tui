@@ -10,6 +10,12 @@ pub trait FileIO {
 
 pub struct FileRW;
 
+impl Default for FileRW {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl FileRW {
     pub fn new() -> Self {
         FileRW
@@ -25,7 +31,7 @@ impl FileIO for FileRW {
     }
 
     fn write_file(&self, file_path: &str, contents: String) {
-        let file = OpenOptions::new().write(true).create(true).open(file_path);
+        let file = OpenOptions::new().write(true).truncate(true).open(file_path);
 
         match file {
             Ok(mut file) => {
@@ -41,15 +47,12 @@ impl FileIO for FileRW {
         let path = Path::new(file_path);
         let display = path.display();
 
-        match path.is_file() {
-            false => {
-                eprintln!("file doesn't exist");
-                return String::from("");
-            }
-            _ => {}
+        if !path.is_file() {
+            eprintln!("file doesn't exist");
+            return String::from("");
         }
 
-        match read_to_string(&path) {
+        match read_to_string(path) {
             Err(why) => {
                 eprintln!("couldn't read {}: {}", display, why);
                 String::from("")

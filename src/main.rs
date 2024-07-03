@@ -16,7 +16,7 @@ fn main() {
     let mut user_response = UserRW::new(&mut string_io);
 
     let file_io = FileRW::new();
-    let mut post_io = PostRW::new();
+    let mut post_io = PostRW::new(vec![]);
     let mut post_fun = PostFun::new(&mut post_io, &mut user_response);
 
     let mut app_io = AppRW::new(&file_io);

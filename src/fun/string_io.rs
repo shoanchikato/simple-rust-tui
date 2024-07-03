@@ -18,7 +18,7 @@ impl<'a, R: BufRead, W: Write> StringRW<'a, R, W> {
 
 impl<'a, R: BufRead, W: Write> StringIO for StringRW<'a, R, W> {
     fn write_to_string(&mut self, text: &str) {
-        match self.writer.write_all(format!("{text}\n").as_bytes()) {
+        match self.writer.write_all(format!("\n{text}\n").as_bytes()) {
             Ok(_) => {}
             Err(_) => {
                 eprintln!("Error writing output");
@@ -30,7 +30,6 @@ impl<'a, R: BufRead, W: Write> StringIO for StringRW<'a, R, W> {
             Ok(_) => {}
             Err(_) => {
                 eprintln!("Error flushing message");
-                return;
             }
         }
     }
@@ -40,7 +39,6 @@ impl<'a, R: BufRead, W: Write> StringIO for StringRW<'a, R, W> {
             Ok(_) => {}
             Err(_) => {
                 eprintln!("Error reading input");
-                return;
             }
         }
     }
