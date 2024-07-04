@@ -8,19 +8,19 @@ use simple_rust_tui::store::file_io::FileRW;
 use std::io::{stdin, stdout, BufReader};
 
 fn main() {
-    let mut stdout = stdout();
+    let stdout = stdout();
     let stdin = stdin();
-    let mut stdin_reader = BufReader::new(stdin.lock());
+    let stdin_reader = BufReader::new(stdin.lock());
 
-    let mut string_io = StringRW::new(&mut stdin_reader, &mut stdout);
-    let mut user_response = UserRW::new(&mut string_io);
+    let string_io = StringRW::new(Box::new(stdin_reader), Box::new(stdout));
+    let user_response = UserRW::new(Box::new(string_io));
 
     let file_io = FileRW::new();
-    let mut post_io = PostRW::new(vec![]);
-    let mut post_fun = PostFun::new(&mut post_io, &mut user_response);
+    let post_io = PostRW::new(vec![]);
+    let post_fun = PostFun::new(Box::new(post_io), Box::new(user_response));
 
-    let mut app_io = AppRW::new(&file_io);
-    let mut app = App::new(&mut post_fun, &mut app_io);
+    let app_io = AppRW::new(Box::new(file_io), Box::new(post_fun));
+    let mut app = App::new(Box::new(app_io));
 
     app.run();
 }

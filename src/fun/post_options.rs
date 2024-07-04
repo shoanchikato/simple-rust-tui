@@ -14,18 +14,18 @@ pub trait PostOptions {
     fn get_response(&mut self, question: &str) -> String;
 }
 
-pub struct PostFun<'a, 'b, P: PostIO, U: UserIO> {
-    repo: &'a mut P,
-    user_io: &'b mut U,
+pub struct PostFun<P: PostIO, U: UserIO> {
+    repo: Box<P>,
+    user_io: Box<U>,
 }
 
-impl<'a, 'b, P: PostIO, U: UserIO> PostFun<'a, 'b, P, U> {
-    pub fn new(repo: &'a mut P, user_io: &'b mut U) -> Self {
+impl<P: PostIO, U: UserIO> PostFun<P, U> {
+    pub fn new(repo: Box<P>, user_io: Box<U>) -> Self {
         PostFun { repo, user_io }
     }
 }
 
-impl<'a, 'b, P: PostIO, U: UserIO> PostOptions for PostFun<'a, 'b, P, U> {
+impl<P: PostIO, U: UserIO> PostOptions for PostFun<P, U> {
     fn show_posts(&mut self) {
         println!("\nPOSTS:");
         println!("======\n");

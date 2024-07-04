@@ -4,17 +4,17 @@ pub trait UserIO {
     fn get_response(&mut self, question: &str) -> String;
 }
 
-pub struct UserRW<'a, S: StringIO> {
-    string_io: &'a mut S,
+pub struct UserRW<S: StringIO> {
+    string_io: Box<S>,
 }
 
-impl<'a, S: StringIO> UserRW<'a, S> {
-    pub fn new(string_io: &'a mut S) -> Self {
+impl<S: StringIO> UserRW<S> {
+    pub fn new(string_io: Box<S>) -> Self {
         UserRW { string_io }
     }
 }
 
-impl<'a, S: StringIO> UserIO for UserRW<'a, S> {
+impl<S: StringIO> UserIO for UserRW<S> {
     fn get_response(&mut self, question: &str) -> String {
         let mut input = String::new();
         input.clear();
