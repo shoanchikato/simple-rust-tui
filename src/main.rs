@@ -19,8 +19,8 @@ fn main() {
     let mut post_io = PostRW::new(vec![]);
     let mut post_fun = PostFun::new(&mut post_io, &mut user_response);
 
-    let mut app_io = AppRW::new(&file_io);
-    let mut app = App::new(&mut post_fun, &mut app_io);
+    let mut app_io = AppRW::new(&file_io, &mut post_fun);
+    let mut app = App::new(&mut app_io);
 
     app.run();
 }

@@ -31,7 +31,10 @@ impl FileIO for FileRW {
     }
 
     fn write_file(&self, file_path: &str, contents: String) {
-        let file = OpenOptions::new().write(true).truncate(true).open(file_path);
+        let file = OpenOptions::new()
+            .write(true)
+            .truncate(true)
+            .open(file_path);
 
         match file {
             Ok(mut file) => {
