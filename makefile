@@ -10,5 +10,5 @@ fmt:
 	cargo fmt
 clean:
 	cargo clean
-clip:
+lint:
 	cargo clippy
