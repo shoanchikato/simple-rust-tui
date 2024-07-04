@@ -1,17 +1,17 @@
 use crate::fun::post_options::PostOptions;
 use crate::store::app_io::AppIO;
 
-pub struct App<'a, A> {
-    app_io: &'a mut A,
+pub struct App<A: AppIO + PostOptions> {
+    app_io: Box<A>,
 }
 
-impl<'a, A: AppIO + PostOptions> App<'a, A> {
-    pub fn new(app_io: &'a mut A) -> Self {
+impl<A: AppIO + PostOptions> App<A> {
+    pub fn new(app_io: Box<A>) -> Self {
         App { app_io }
     }
 }
 
-impl<'a, A: AppIO + PostOptions> App<'a, A>  {
+impl<A: AppIO + PostOptions> App<A>  {
     fn show_options(&mut self) -> u8 {
         let options = format!(
             "{}\n{}\n{}\n{}\n{}\n{}\n{}\n",

@@ -12,21 +12,21 @@ pub trait AppIO {
     fn on_end(&mut self);
 }
 
-pub struct AppRW<'a> {
-    file_io: &'a dyn FileIO,
-    post_rw: &'a mut dyn PostOptions,
+pub struct AppRW {
+    file_io: Box<dyn FileIO>,
+    post_rw: Box<dyn PostOptions>,
 }
 
-impl<'a> AppRW<'a> {
+impl AppRW {
     pub fn new(
-        file_io: &'a dyn FileIO, 
-        post_rw: &'a mut dyn PostOptions,
+        file_io: Box<dyn FileIO>, 
+        post_rw: Box<dyn PostOptions>,
     ) -> Self {
         AppRW { file_io, post_rw }
     }
 }
 
-impl<'a> AppIO for AppRW<'a> {
+impl AppIO for AppRW {
     fn on_load(&mut self) {
         let file_path = FILE_NAME;
 
@@ -64,7 +64,7 @@ impl<'a> AppIO for AppRW<'a> {
     }
 }
 
-impl <'a> PostOptions for AppRW<'a> {
+impl PostOptions for AppRW {
     fn show_posts(&mut self) {
         self.post_rw.show_posts();
     }
