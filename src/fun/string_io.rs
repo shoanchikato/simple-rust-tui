@@ -5,18 +5,18 @@ pub trait StringIO {
     fn read_from_string(&mut self, text: &mut String);
 }
 
-pub struct StringRW<'a, R: BufRead, W: Write> {
-    reader: &'a mut R,
-    writer: &'a mut W,
+pub struct StringRW<'a> {
+    reader: &'a mut dyn BufRead,
+    writer: &'a mut dyn Write,
 }
 
-impl<'a, R: BufRead, W: Write> StringRW<'a, R, W> {
-    pub fn new(reader: &'a mut R, writer: &'a mut W) -> Self {
+impl<'a> StringRW<'a> {
+    pub fn new(reader: &'a mut dyn BufRead, writer: &'a mut dyn Write) -> Self {
         StringRW { reader, writer }
     }
 }
 
-impl<'a, R: BufRead, W: Write> StringIO for StringRW<'a, R, W> {
+impl<'a> StringIO for StringRW<'a> {
     fn write_to_string(&mut self, text: &str) {
         match self.writer.write_all(format!("\n{text}\n").as_bytes()) {
             Ok(_) => {}

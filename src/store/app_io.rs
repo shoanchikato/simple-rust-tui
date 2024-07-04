@@ -8,29 +8,33 @@ use crate::store::file_io::FileIO;
 const FILE_NAME: &str = "post_db.json";
 
 pub trait AppIO {
-    fn on_load<P: PostOptions>(&mut self, post_rw: &mut P);
-    fn on_end<P: PostOptions>(&mut self, post_rw: &mut P);
+    fn on_load(&mut self);
+    fn on_end(&mut self);
 }
 
-pub struct AppRW<'a, F: FileIO> {
-    file_io: &'a F,
+pub struct AppRW<'a> {
+    file_io: &'a dyn FileIO,
+    post_rw: &'a mut dyn PostOptions,
 }
 
-impl<'a, F: FileIO> AppRW<'a, F> {
-    pub fn new(file_io: &'a F) -> Self {
-        AppRW { file_io }
+impl<'a> AppRW<'a> {
+    pub fn new(
+        file_io: &'a dyn FileIO, 
+        post_rw: &'a mut dyn PostOptions,
+    ) -> Self {
+        AppRW { file_io, post_rw }
     }
 }
 
-impl<'a, F: FileIO> AppIO for AppRW<'a, F> {
-    fn on_load<P: PostOptions>(&mut self, post_rw: &mut P) {
+impl<'a> AppIO for AppRW<'a> {
+    fn on_load(&mut self) {
         let file_path = FILE_NAME;
 
         let mut load_posts = || {
             let string_posts = self.file_io.read_file(file_path);
 
             if let Ok(mut posts) = from_str::<Vec<Post>>(&string_posts) {
-                post_rw.add_all(&mut posts);
+                self.post_rw.add_all(&mut posts);
             }
         };
 
@@ -41,11 +45,11 @@ impl<'a, F: FileIO> AppIO for AppRW<'a, F> {
         }
     }
 
-    fn on_end<P: PostOptions>(&mut self, post_rw: &mut P) {
+    fn on_end(&mut self) {
         let file_path = FILE_NAME;
 
         let write_posts = || {
-            let posts = post_rw.get_all();
+            let posts = self.post_rw.get_all();
 
             if let Ok(string_posts) = to_string(posts) {
                 self.file_io.write_file(file_path, string_posts);
@@ -57,5 +61,35 @@ impl<'a, F: FileIO> AppIO for AppRW<'a, F> {
         } else {
             eprintln!("Error creating new file");
         }
+    }
+}
+
+impl <'a> PostOptions for AppRW<'a> {
+    fn show_posts(&mut self) {
+        self.post_rw.show_posts();
+    }
+
+    fn write_post(&mut self) {
+        self.post_rw.write_post();
+    }
+
+    fn edit_post(&mut self) {
+        self.post_rw.edit_post();
+    }
+
+    fn remove_post(&mut self) {
+        self.post_rw.remove_post();
+    }
+
+    fn get_all(&self) -> &Vec<Post> {
+        self.post_rw.get_all()
+    }
+
+    fn add_all(&mut self, posts: &mut Vec<Post>) {
+        self.post_rw.add_all(posts);
+    }
+
+    fn get_response(&mut self, question: &str) -> String {
+        self.post_rw.get_response(question)
     }
 }
